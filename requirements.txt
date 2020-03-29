@@ -1,0 +1,14 @@
+certifi==2019.11.28
+chardet==3.0.4
+Click==7.0
+Flask==1.1.1
+idna==2.8
+itsdangerous==1.1.0
+Jinja2==2.11.0
+MarkupSafe==1.1.1
+peewee==3.13.1
+PyJWT==1.7.1
+python-dotenv==0.10.5
+requests==2.22.0
+urllib3==1.25.8
+Werkzeug==0.16.1

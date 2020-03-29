@@ -1,0 +1,13 @@
+
+
+/venv
+/.idea
+
+.idea
+
+site.db
+
+/__pycache__
+
+.env
+
