@@ -8,8 +8,10 @@ Jinja2==2.11.0
 MarkupSafe==1.1.1
 peewee==3.13.1
 PyJWT==1.7.1
+pyTelegramBotAPI==3.6.7
 python-dotenv==0.10.5
 requests==2.22.0
+six==1.14.0
+telebot==0.0.3
 urllib3==1.25.8
 Werkzeug==0.16.1
-telebot==0.0.3
