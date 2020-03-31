@@ -3,8 +3,15 @@ from views import demo
 import os
 import telebot
 from telebot import types
-###############################USER_INFO#######################
+###############################Global_INFO#######################
 USER={}
+HELP_TYPES={ 1: { "id": 4,"title": "Food","title_uz": "Озиқ-овқат","title_ru": "Продукты питания","title_en": "Food"
+        },
+        2:{   "id": 5,"title": "Medicine","title_uz": "Дори-дармон", "title_ru": "Лекарства", "title_en": "Medicine"
+        },
+        3:{  "id": 6, "title": "Delivery services","title_uz": "Етказиб бериш хизмати","title_ru": "Служба доставки", "title_en": "Delivery services"
+        },
+        4:{ "id": 7,"title": "Masks","title_uz": "Маскалар","title_ru": "Маски","title_en": "Masks"   }}
 #user_type =1 busa valunter #2 busa need
 
 ###############################################################
@@ -22,6 +29,7 @@ VOLUNTER_BUTTON_UZ = "Волонтерман"
 NEED_BUTTON_UZ ="Ёрдам олувчи"
 VOLUNTER_BUTTON_RUS = "Нуждающийся"
 NEED_BUTTON_RUS ="Волонтер"
+HELP_TYPE=[]
 ########################################################################
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -53,7 +61,7 @@ def start_login_uzb(message):
         USER['lang']='rus'
         photo = open('C:\\Users\\Bokhodir\\PycharmProjects\\Birlik_covid19\\covid19-solidarity-tgbot\\photos\\profile_2.png', 'rb')
         bot.send_photo(chat_id, photo)
-        msg = bot.send_message(chat_id=chat_id, text="Нуждающийся \n Волонтер")
+        msg = bot.send_message(chat_id=chat_id, text="\t \t \t 🙃 Нуждающийся 🙃\n или \n 😇 Волонтер 😇")
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTER_BUTTON_RUS))
         markup.add(types.KeyboardButton(NEED_BUTTON_RUS))
@@ -62,7 +70,7 @@ def start_login_uzb(message):
         USER['lang']='uzb'
         photo = open('C:\\Users\\Bokhodir\\PycharmProjects\\Birlik_covid19\\covid19-solidarity-tgbot\\photos\\profile_2.png', 'rb')
         bot.send_photo(chat_id, photo)
-        msg = bot.send_message(chat_id=chat_id, text="Ёрдам олувчи \n Волонтерман")
+        msg = bot.send_message(chat_id=chat_id, text="\t \t \t 🙃 Ёрдам олувчи 🙃 \n ёки \n😇 Волонтерман 😇")
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTER_BUTTON_UZ))
         markup.add(types.KeyboardButton(NEED_BUTTON_UZ))
@@ -106,12 +114,44 @@ def get_full_name(message):
         msg = bot.send_message(chat_id, text = lang,reply_markup=keyboard)
         bot.register_next_step_handler(msg, get_contact_info)
 
+def make_help_button(msg):
+    global HELP_TYPE
+    global HELP_TYPES
+    HELP_TYPE = []
+    for i,j in HELP_TYPES.items():
+        HELP_TYPE.append(j[msg])
+
+
 
 def get_contact_info(message):
     global USER
+    global HELP_TYPE
+    lang=[]
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
-        USER['PHONE'] = message.contact.phone_number
+        if message.contact != None:
+            USER['PHONE'] = message.contact.phone_number
+        else:
+            USER['PHONE'] = message.text
+        if USER['lang'] == 'uzb':
+            make_help_button('title_uz')
+            lang = ["таклифингиз","талабингиз"]
+        else:
+            make_help_button('title_ru')
+            lang = ["ваше предложение", "ваш запрос"]
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        for i in HELP_TYPE:
+            markup.add(types.KeyboardButton(i))
+#shutga next step hendler bilan qilish kere agar bir busa usertype multiple tallab biladi
+        if USER['user_type'] ==1:
+            photo = open('C:\\Users\\Bokhodir\\PycharmProjects\\Birlik_covid19\\covid19-solidarity-tgbot\\photos\\help_1.png', 'rb')
+            bot.send_message(chat_id=chat_id, text=lang[0], reply_markup=markup)
+        else :
+            photo = open('C:\\Users\\Bokhodir\\PycharmProjects\\Birlik_covid19\\covid19-solidarity-tgbot\\photos\\help_2.png', 'rb')
+            bot.send_message(chat_id=chat_id, text=lang[1], reply_markup=markup)
+
+
+
         print("\n\n\n")
         print(USER)
         print("\n\n\n")
