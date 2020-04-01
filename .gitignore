@@ -2,12 +2,8 @@
 
 /venv
 /.idea
-
-.idea
-
-site.db
-
 /__pycache__
 
+site.db
 .env
 
