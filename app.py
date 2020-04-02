@@ -312,7 +312,8 @@ def get_location(message):
         else:
             r = requests.post('https://birdamlik.uz/api/inneed/create', data=USER)
         if r.status_code != 201:
-            print("Error:", r.status_code)
+            print("Error: ", r.status_code)
+            print("Error text: ", r.text)
         else:
             lang = {
                 "rus": "Успешно зарегистрирован",
