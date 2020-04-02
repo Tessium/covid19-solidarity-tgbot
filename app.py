@@ -176,9 +176,11 @@ def get_contact_info(message):
         # shutga next step handler bilan qilish kere agar bir busa usertype multiple tallab biladi
         if USER['user_type'] == 1:
             photo = open('photos/help_1.png', 'rb')
+            bot.send_photo(chat_id, photo)
             msg = bot.send_message(chat_id=chat_id, text=lang[0], reply_markup=markup)
         else:
             photo = open('photos/help_2.png', 'rb')
+            bot.send_photo(chat_id, photo)
             msg = bot.send_message(chat_id=chat_id, text=lang[1], reply_markup=markup)
         bot.register_next_step_handler(msg, get_help_types)
 
@@ -202,8 +204,6 @@ def get_help_types(message):
                     if str(get_id_of_help_type(HELP_TYPES, i)) not in USER['help_type'].split(',')[:-1]:
                         markup.add(types.KeyboardButton(i))
                 markup.add(types.KeyboardButton(lang[USER["lang"]]))
-
-                photo = open('photos/help_1.png', 'rb')
                 if USER['lang'] == 'rus':
                     make_help_button('title_ru')
                     msg = bot.send_message(chat_id=chat_id, text="Еще?", reply_markup=markup)
@@ -218,6 +218,7 @@ def get_help_types(message):
                     "uzb": "Изоҳ қолдиринг",
                 }
                 photo = open('photos/comment_1.png', 'rb')
+                bot.send_photo(chat_id, photo)
                 msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
                 bot.register_next_step_handler(msg, get_comment)
         else:
@@ -227,6 +228,7 @@ def get_help_types(message):
                 "uzb": "Изоҳ қолдиринг",
             }
             photo = open('photos/comment_2.png', 'rb')
+            bot.send_photo(chat_id, photo)
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
             bot.register_next_step_handler(msg, get_comment)
 
@@ -247,6 +249,7 @@ def get_comment(message):
             photo = open('photos/location_1.png', 'rb')
         elif USER['user_type'] == 2:
             photo = open('photos/location_2.png', 'rb')
+        bot.send_photo(chat_id, photo)
         msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
         bot.register_next_step_handler(msg, get_region)
 
@@ -255,6 +258,17 @@ def get_region(message):
     global USER
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
+        if message.text not in REGIONS.keys():
+            lang = {
+            "rus": "Пожалуйста, выберите из списка:",
+            "uzb": "Илтимос, руйхатдан танланг:"
+            }
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            for i in REGIONS.keys():
+                markup.add(types.KeyboardButton(i))
+            msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
+            bot.register_next_step_handler(msg, get_region)
+            return 
         USER['region'] = message.text
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in REGIONS[message.text]:
@@ -271,6 +285,17 @@ def get_city(message):
     global USER
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
+        if message.text not in REGIONS[USER['region']]:
+            lang = {
+            "rus": "Пожалуйста, выберите из списка:",
+            "uzb": "Илтимос, руйхатдан танланг:"
+            }
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            for i in REGIONS[USER['region']]:
+                markup.add(types.KeyboardButton(i))
+            msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
+            bot.register_next_step_handler(msg, get_city)
+            return
         USER['city'] = message.text
 
         lang = {
