@@ -7,7 +7,7 @@ import json
 
 ###############################Global_INFO#######################
 
-USERS = [] 
+USERS = []
 
 r = requests.get('https://birdamlik.uz/api/helptypes')
 if r.status_code != 200:
@@ -45,9 +45,9 @@ INNEED_BUTTON_RU = "Я нуждающийся"
 VOLUNTEER_BUTTON_UZ = "Волонтерман"
 INNEED_BUTTON_UZ = "Ёрдам олувчиман"
 TYPES = {
-        "uzb": [VOLUNTEER_BUTTON_UZ, INNEED_BUTTON_UZ,], 
-        "rus": [VOLUNTEER_BUTTON_RU,  INNEED_BUTTON_RU]
-        }
+    "uzb": [VOLUNTEER_BUTTON_UZ, INNEED_BUTTON_UZ, ],
+    "rus": [VOLUNTEER_BUTTON_RU, INNEED_BUTTON_RU]
+}
 
 HELP_TYPE = []
 
@@ -71,8 +71,8 @@ def start(message):
     markup.add(types.KeyboardButton(LANGUAGE_BUTTON_RU))
     markup.add(types.KeyboardButton(LANGUAGE_BUTTON_UZ))
     msg = bot.send_message(chat_id=chat_id,
-                     text="🇷🇺--Выберите язык--🇷🇺\n 🇺🇿--Тилни танланг--🇺🇿",
-                     reply_markup=markup)
+                           text="🇷🇺--Выберите язык--🇷🇺\n 🇺🇿--Тилни танланг--🇺🇿",
+                           reply_markup=markup)
     bot.register_next_step_handler(msg, start_login_uzb)
 
 
@@ -82,11 +82,10 @@ def user_button_check(message):
 
 
 def user_type_set(user_type):
-    if user_type == VOLUNTEER_BUTTON_RU or user_type == VOLUNTEER_BUTTON_UZ:  
+    if user_type == VOLUNTEER_BUTTON_RU or user_type == VOLUNTEER_BUTTON_UZ:
         return 1
     else:
         return 2
-
 
 
 def start_login_uzb(message):
@@ -103,7 +102,8 @@ def start_login_uzb(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_RU))
         markup.add(types.KeyboardButton(INNEED_BUTTON_RU))
-        msg = bot.send_message(chat_id=chat_id, text=f'__Нуждающийся__ или __Волонтер__', parse_mode='Markdown', reply_markup=markup)
+        msg = bot.send_message(chat_id=chat_id, text=f'__Нуждающийся__ или __Волонтер__', parse_mode='Markdown',
+                               reply_markup=markup)
     elif message.text == LANGUAGE_BUTTON_UZ:
         USER['lang'] = 'uzb'
         USERS.append(USER)
@@ -112,23 +112,24 @@ def start_login_uzb(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_UZ))
         markup.add(types.KeyboardButton(INNEED_BUTTON_UZ))
-        msg = bot.send_message(chat_id=chat_id, text=f'__Ёрдам олувчи__ ёки __Волонтер__', parse_mode='Markdown', reply_markup=markup)
+        msg = bot.send_message(chat_id=chat_id, text=f'__Ёрдам олувчи__ ёки __Волонтер__', parse_mode='Markdown',
+                               reply_markup=markup)
     else:
         lang = {
-        "rus": "Пожалуйста, выберите из списка:",
-        "uzb": "Илтимос, руйхатдан танланг:"
+            "rus": "Пожалуйста, выберите из списка:",
+            "uzb": "Илтимос, руйхатдан танланг:"
         }
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in LANGUAGES:
             markup.add(types.KeyboardButton(i))
-        msg = bot.send_message(chat_id=chat_id, text=lang["rus"]+"\n"+lang["uzb"], reply_markup=markup)
+        msg = bot.send_message(chat_id=chat_id, text=lang["rus"] + "\n" + lang["uzb"], reply_markup=markup)
         bot.register_next_step_handler(msg, start_login_uzb)
-        return 
+        return
     bot.register_next_step_handler(msg, get_user_type)
 
 
 def get_user_type(message):
-    global USERS    
+    global USERS
     msg = message.text
     chat_id = message.chat.id
     USER = {}
@@ -151,15 +152,15 @@ def get_user_type(message):
             bot.register_next_step_handler(msg, get_full_name)
     else:
         lang = {
-        "rus": "Пожалуйста, выберите из списка:",
-        "uzb": "Илтимос, руйхатдан танланг:"
+            "rus": "Пожалуйста, выберите из списка:",
+            "uzb": "Илтимос, руйхатдан танланг:"
         }
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in TYPES[USER["lang"]]:
             markup.add(types.KeyboardButton(i))
         msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
         bot.register_next_step_handler(msg, start_login_uzb)
-        return 
+        return
 
 
 def get_full_name(message):
@@ -180,7 +181,7 @@ def get_full_name(message):
                                              one_time_keyboard=True)  # Подключаем клавиатуру
         if USER['lang'] == 'rus':
             button_phone = types.KeyboardButton(text="Отправить номер телефона", request_contact=True)
-            lang = "Отправить номер телефона"
+            lang = "Отправьте номер телефона"
         elif USER['lang'] == 'uzb':
             button_phone = types.KeyboardButton(text="Телефон рақамингизни юборинг", request_contact=True)
             lang = "Телефон рақамингизни юборинг"
@@ -254,16 +255,17 @@ def get_help_types(message):
                     for i in HELP_TYPE:
                         if str(get_id_of_help_type(HELP_TYPES, i)) not in USER['help_type'].split(',')[:-1]:
                             markup.add(types.KeyboardButton(i))
-                    if 'help_type' in USER.keys(): 
+                    if 'help_type' in USER.keys():
                         markup.add(types.KeyboardButton(lang[USER["lang"]]))
                     if USER['lang'] == 'rus':
                         make_help_button('title_ru')
-                        msg = bot.send_message(chat_id=chat_id, text="Пожалуйста, выберите из списка:", reply_markup=markup)
+                        msg = bot.send_message(chat_id=chat_id, text="Пожалуйста, выберите из списка:",
+                                               reply_markup=markup)
                     elif USER['lang'] == 'uzb':
                         make_help_button('title_uz')
                         msg = bot.send_message(chat_id=chat_id, text="Илтимос, руйхатдан танланг:", reply_markup=markup)
                     bot.register_next_step_handler(msg, get_help_types)
-                    return 
+                    return
                 USER['help_type'] += str(get_id_of_help_type(HELP_TYPES, message.text)) + ','
                 markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
                 for i in HELP_TYPE:
@@ -309,7 +311,7 @@ def get_help_types(message):
             bot.send_photo(chat_id, photo)
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
             bot.register_next_step_handler(msg, get_region)
-        
+
 
 def get_region(message):
     global USERS
@@ -321,15 +323,15 @@ def get_region(message):
     if USER['chat_id'] == chat_id:
         if message.text not in REGIONS.keys():
             lang = {
-            "rus": "Пожалуйста, выберите из списка:",
-            "uzb": "Илтимос, руйхатдан танланг:"
+                "rus": "Пожалуйста, выберите из списка:",
+                "uzb": "Илтимос, руйхатдан танланг:"
             }
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             for i in REGIONS.keys():
                 markup.add(types.KeyboardButton(i))
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
             bot.register_next_step_handler(msg, get_region)
-            return 
+            return
         USER['region'] = message.text
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in REGIONS[message.text]:
@@ -352,8 +354,8 @@ def get_city(message):
     if USER['chat_id'] == chat_id:
         if message.text not in REGIONS[USER['region']]:
             lang = {
-            "rus": "Пожалуйста, выберите из списка:",
-            "uzb": "Илтимос, руйхатдан танланг:"
+                "rus": "Пожалуйста, выберите из списка:",
+                "uzb": "Илтимос, руйхатдан танланг:"
             }
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             for i in REGIONS[USER['region']]:
@@ -402,8 +404,8 @@ def get_address(message):
             bot.register_next_step_handler(msg, get_location)
         else:
             lang = {
-            "rus": "Оставьте комментарий",
-            "uzb": "Изоҳ қолдиринг",
+                "rus": "Оставьте комментарий",
+                "uzb": "Изоҳ қолдиринг",
             }
             if USER['user_type'] == 1:
                 photo = open('photos/comment_1.png', 'rb')
@@ -412,7 +414,6 @@ def get_address(message):
             bot.send_photo(chat_id, photo)
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
             bot.register_next_step_handler(msg, get_comment)
-
 
 
 def get_location(message):
@@ -481,7 +482,21 @@ def get_comment(message):
                 "uzb": "Муваффақиятли рўйхатдан ўтдингиз"
             }
             bot.send_photo(chat_id, photo)
-            bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
+            bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
+            lang = {
+                "rus": {
+                    1: "Координаторы свяжутся с Вами в ближайшее время.",
+                    2: "Волонтеры свяжутся с Вами в ближайшее время."
+                },
+                "uzb": {
+                    1: "Қисқа муддат ичида координаторлар сиз билан боғланишади. Илтимос кутинг!",
+                    2: "Қисқа муддат ичида сизга ёрдам берилади. Илтимос кутинг!"
+                }
+            }
+            bot.send_message(chat_id=chat_id, text=lang[USER["lang"]][USER["user_type"]], reply_markup=markup)
+
+
+
 
 if __name__ == "__main__":
     bot.polling()
