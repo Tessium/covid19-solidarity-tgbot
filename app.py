@@ -221,7 +221,7 @@ def get_help_types(message):
                 msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
                 bot.register_next_step_handler(msg, get_comment)
         else:
-            USER['help_type'] = message.text
+            USER['help_type'] = str(get_id_of_help_type(HELP_TYPES, message.text))
             lang = {
                 "rus": "Оставьте комментарий",
                 "uzb": "Изоҳ қолдиринг",
@@ -294,18 +294,25 @@ def get_address(message):
         }
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         markup.add(types.KeyboardButton(text=lang[USER["lang"]], request_location=True))
+        lang = {
+            "rus": "Пропустить",
+            "uzb": "Кейигиси"
+        }
+        markup.add(types.KeyboardButton(text=lang[USER["lang"]]))
         msg = bot.send_message(chat_id, text=lang[USER["lang"]], reply_markup=markup)
         bot.register_next_step_handler(msg, get_location)
 
 
 def get_location(message):
+
     global USER
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
-        if message.location is not None:
-            USER['location'] = str(message.location.latitude) + "," + str(message.location.longitude)
-        else:
-            USER['location'] = message.text
+        if message.text not in ["Пропустить", "Кейигиси"]:
+            if message.location is not None:
+                USER['location'] = str(message.location.latitude) + "," + str(message.location.longitude)
+            else:
+                USER['location'] = message.text
         print(USER)
         if USER['user_type'] == 1:
             r = requests.post('https://birdamlik.uz/api/volunteers/create', data=USER)
