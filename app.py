@@ -39,11 +39,11 @@ LANGUAGE_BUTTON_RU = "🇷🇺--Русcкий--🇷🇺"
 LANGUAGE_BUTTON_UZ = "🇺🇿--Узбекча--🇺🇿"
 LANGUAGES = [LANGUAGE_BUTTON_RU, LANGUAGE_BUTTON_UZ]
 
-VOLUNTEER_BUTTON_RU = "Волонтер"
-INNEED_BUTTON_RU = "Нуждающийся"
+VOLUNTEER_BUTTON_RU = "Я волонтер"
+INNEED_BUTTON_RU = "Я нуждающийся"
 
 VOLUNTEER_BUTTON_UZ = "Волонтерман"
-INNEED_BUTTON_UZ = "Ёрдам олув"
+INNEED_BUTTON_UZ = "Ёрдам олувчиман"
 TYPES = {
         "uzb": [VOLUNTEER_BUTTON_UZ, INNEED_BUTTON_UZ,], 
         "rus": [VOLUNTEER_BUTTON_RU,  INNEED_BUTTON_RU]
@@ -103,7 +103,7 @@ def start_login_uzb(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_RU))
         markup.add(types.KeyboardButton(INNEED_BUTTON_RU))
-        msg = bot.send_message(chat_id=chat_id, text="🙃 Нуждающийся 🙃\n или \n 😇 Волонтер 😇", reply_markup=markup)
+        msg = bot.send_message(chat_id=chat_id, text=f'__Нуждающийся__ или __Волонтер__', parse_mode='Markdown', reply_markup=markup)
     elif message.text == LANGUAGE_BUTTON_UZ:
         USER['lang'] = 'uzb'
         USERS.append(USER)
@@ -112,8 +112,7 @@ def start_login_uzb(message):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_UZ))
         markup.add(types.KeyboardButton(INNEED_BUTTON_UZ))
-        msg = bot.send_message(chat_id=chat_id, text="🙃 Ёрдам олувчи 🙃 \n ёки \n😇 Волонтерман 😇",
-                               reply_markup=markup)
+        msg = bot.send_message(chat_id=chat_id, text=f'__Ёрдам олувчи__ ёки __Волонтер__', parse_mode='Markdown', reply_markup=markup)
     else:
         lang = {
         "rus": "Пожалуйста, выберите из списка:",
@@ -145,8 +144,8 @@ def get_user_type(message):
                 photo = open('photos/name_2.png', 'rb')
             msg = bot.send_photo(chat_id, photo)
             lang = {
-                "rus": "ФИО",
-                "uzb": "ФИШ",
+                "rus": "Ф.И.О:",
+                "uzb": "Ф.И.Ш:",
             }
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
             bot.register_next_step_handler(msg, get_full_name)
@@ -214,10 +213,10 @@ def get_contact_info(message):
             USER['phone'] = message.text
         if USER['lang'] == 'rus':
             make_help_button('title_ru')
-            lang = ["Ваше предложение", "Ваш запрос"]
+            lang = ["Как вы можете помочь?", "Какая помощь вам нужна?"]
         elif USER['lang'] == 'uzb':
             make_help_button('title_uz')
-            lang = ["Таклифингиз", "Талабингиз"]
+            lang = ["Сиз қандай ёрдам бера оласиз?", "Сизга қандай ёрдам керак?"]
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in HELP_TYPE:
             markup.add(types.KeyboardButton(i))
@@ -280,50 +279,37 @@ def get_help_types(message):
                 bot.register_next_step_handler(msg, get_help_types)
             else:
                 USER['help_type'] = USER['help_type'][:-1]
+                markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+                for i in REGIONS.keys():
+                    markup.add(types.KeyboardButton(i))
                 lang = {
-                    "rus": "Оставьте комментарий",
-                    "uzb": "Изоҳ қолдиринг",
+                    "rus": "Область:",
+                    "uzb": "Вилоят:"
                 }
-                photo = open('photos/comment_1.png', 'rb')
+                if USER['user_type'] == 1:
+                    photo = open('photos/location_1.png', 'rb')
+                elif USER['user_type'] == 2:
+                    photo = open('photos/location_2.png', 'rb')
                 bot.send_photo(chat_id, photo)
-                msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
-                bot.register_next_step_handler(msg, get_comment)
+                msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
+                bot.register_next_step_handler(msg, get_region)
         else:
             USER['help_type'] = str(get_id_of_help_type(HELP_TYPES, message.text))
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            for i in REGIONS.keys():
+                markup.add(types.KeyboardButton(i))
             lang = {
-                "rus": "Оставьте комментарий",
-                "uzb": "Изоҳ қолдиринг",
+                "rus": "Область:",
+                "uzb": "Вилоят:"
             }
-            photo = open('photos/comment_2.png', 'rb')
+            if USER['user_type'] == 1:
+                photo = open('photos/location_1.png', 'rb')
+            elif USER['user_type'] == 2:
+                photo = open('photos/location_2.png', 'rb')
             bot.send_photo(chat_id, photo)
-            msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
-            bot.register_next_step_handler(msg, get_comment)
-
-
-def get_comment(message):
-    global USERS
-    chat_id = message.chat.id
-    USER = {}
-    for i in USERS:
-        if i['chat_id'] == chat_id:
-            USER = i
-    if USER['chat_id'] == chat_id:
-        USER['info'] = message.text
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        for i in REGIONS.keys():
-            markup.add(types.KeyboardButton(i))
-        lang = {
-            "rus": "Область:",
-            "uzb": "Вилоят:"
-        }
-        if USER['user_type'] == 1:
-            photo = open('photos/location_1.png', 'rb')
-        elif USER['user_type'] == 2:
-            photo = open('photos/location_2.png', 'rb')
-        bot.send_photo(chat_id, photo)
-        msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
-        bot.register_next_step_handler(msg, get_region)
-
+            msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
+            bot.register_next_step_handler(msg, get_region)
+        
 
 def get_region(message):
     global USERS
@@ -394,21 +380,39 @@ def get_address(message):
             USER = i
     if USER['chat_id'] == chat_id:
         USER['address'] = message.text
-        photo = open('photos/ex_location_2.png', 'rb')
-        bot.send_photo(chat_id, photo)
-        lang = {
-            "rus": "Выберите локацию:",
-            "uzb": "Аниқ манзилни танланг:"
-        }
-        markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-        markup.add(types.KeyboardButton(text=lang[USER["lang"]], request_location=True))
-        lang = {
-            "rus": "Пропустить",
-            "uzb": "Ўтказиб юбориш"
-        }
-        markup.add(types.KeyboardButton(text=lang[USER["lang"]]))
-        msg = bot.send_message(chat_id, text=lang[USER["lang"]], reply_markup=markup)
-        bot.register_next_step_handler(msg, get_location)
+        if USER['user_type'] == 2:
+            photo = open('photos/ex_location_2.png', 'rb')
+            bot.send_photo(chat_id, photo)
+            lang = {
+                "rus": "Выберите локацию:",
+                "uzb": "Аниқ манзилни танланг:"
+            }
+            markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+            markup.add(types.KeyboardButton(text=lang[USER["lang"]], request_location=True))
+            lang = {
+                "rus": "Пропустить",
+                "uzb": "Ўтказиб юбориш"
+            }
+            markup.add(types.KeyboardButton(text=lang[USER["lang"]]))
+            lang = {
+                "rus": "Отправить местоположение",
+                "uzb": "Локацияни жўнатиш"
+            }
+            msg = bot.send_message(chat_id, text=lang[USER["lang"]], reply_markup=markup)
+            bot.register_next_step_handler(msg, get_location)
+        else:
+            lang = {
+            "rus": "Оставьте комментарий",
+            "uzb": "Изоҳ қолдиринг",
+            }
+            if USER['user_type'] == 1:
+                photo = open('photos/comment_1.png', 'rb')
+            else:
+                photo = open('photos/comment_2.png', 'rb')
+            bot.send_photo(chat_id, photo)
+            msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
+            bot.register_next_step_handler(msg, get_comment)
+
 
 
 def get_location(message):
@@ -424,6 +428,28 @@ def get_location(message):
                 USER['location'] = str(message.location.latitude) + "," + str(message.location.longitude)
             else:
                 USER['location'] = message.text
+        lang = {
+            "rus": "Оставьте комментарий",
+            "uzb": "Изоҳ қолдиринг",
+        }
+        if USER['user_type'] == 1:
+            photo = open('photos/comment_1.png', 'rb')
+        else:
+            photo = open('photos/comment_2.png', 'rb')
+        bot.send_photo(chat_id, photo)
+        msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
+        bot.register_next_step_handler(msg, get_comment)
+
+
+def get_comment(message):
+    global USERS
+    chat_id = message.chat.id
+    USER = {}
+    for i in USERS:
+        if i['chat_id'] == chat_id:
+            USER = i
+    if USER['chat_id'] == chat_id:
+        USER['info'] = message.text
         print(USER)
         if USER['user_type'] == 1:
             r = requests.post('https://birdamlik.uz/api/volunteers/create', data=USER)
@@ -456,7 +482,6 @@ def get_location(message):
             }
             bot.send_photo(chat_id, photo)
             bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
-
 
 if __name__ == "__main__":
     bot.polling()
