@@ -57,7 +57,7 @@ def start(message):
     markup.add(types.KeyboardButton(LANGUAGE_BUTTON_RU))
     markup.add(types.KeyboardButton(LANGUAGE_BUTTON_UZ))
     bot.send_message(chat_id=chat_id,
-                     text="🇺🇿--Выберите язык--🇺🇿\n 🇷🇺--Тилни танланг--🇷🇺",
+                     text="🇷🇺--Выберите язык--🇷🇺\n 🇺🇿--Тилни танланг--🇺🇿",
                      reply_markup=markup)
 
 
@@ -136,11 +136,11 @@ def get_full_name(message):
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True,
                                              one_time_keyboard=True)  # Подключаем клавиатуру
         if USER['lang'] == 'rus':
-            button_phone = types.KeyboardButton(text="Отправить телефон", request_contact=True)
-            lang = "Отправить телефон"
+            button_phone = types.KeyboardButton(text="Отправить номер телефона", request_contact=True)
+            lang = "Отправить номер телефона"
         elif USER['lang'] == 'uzb':
-            button_phone = types.KeyboardButton(text="Телефон рақамингизни беринг", request_contact=True)
-            lang = "Телефон рақамингизни беринг"
+            button_phone = types.KeyboardButton(text="Телефон рақамингизни юборинг", request_contact=True)
+            lang = "Телефон рақамингизни юборинг"
         keyboard.add(button_phone)  # Добавляем эту кнопку
         msg = bot.send_message(chat_id, text=lang, reply_markup=keyboard)
         bot.register_next_step_handler(msg, get_contact_info)
@@ -166,10 +166,10 @@ def get_contact_info(message):
             USER['phone'] = message.text
         if USER['lang'] == 'rus':
             make_help_button('title_ru')
-            lang = ["ваше предложение", "ваш запрос"]
+            lang = ["Ваше предложение", "Ваш запрос"]
         elif USER['lang'] == 'uzb':
             make_help_button('title_uz')
-            lang = ["таклифингиз", "талабингиз"]
+            lang = ["Таклифингиз", "Талабингиз"]
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         for i in HELP_TYPE:
             markup.add(types.KeyboardButton(i))
@@ -187,13 +187,13 @@ def get_help_types(message):
     global USER
     global HELP_TYPE
     lang = {
-        "rus": "достаточно",
-        "uzb": "етарли",
+        "rus": "Достаточно",
+        "uzb": "Етарлик",
     }
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
         if USER['user_type'] == 1:
-            if message.text != "достаточно" and message.text != "етарли":
+            if message.text != "Достаточно" and message.text != "Етарлик":
                 if 'help_type' not in USER.keys():
                     USER['help_type'] = ''
                 USER['help_type'] += str(get_id_of_help_type(HELP_TYPES, message.text)) + ','
@@ -214,8 +214,8 @@ def get_help_types(message):
             else:
                 USER['help_type'] = USER['help_type'][:-1]
                 lang = {
-                    "rus": "оставьте комментарий",
-                    "uzb": "изоҳ қолдиринг",
+                    "rus": "Оставьте комментарий",
+                    "uzb": "Изоҳ қолдиринг",
                 }
                 photo = open('photos/comment_1.png', 'rb')
                 msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
@@ -223,8 +223,8 @@ def get_help_types(message):
         else:
             USER['help_type'] = message.text
             lang = {
-                "rus": "оставьте комментарий",
-                "uzb": "изоҳ қолдиринг",
+                "rus": "Оставьте комментарий",
+                "uzb": "Изоҳ қолдиринг",
             }
             photo = open('photos/comment_2.png', 'rb')
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
@@ -289,7 +289,7 @@ def get_address(message):
         photo = open('photos/ex_location_2.png', 'rb')
         bot.send_photo(chat_id, photo)
         lang = {
-            "rus": "Выбирайте локацию:",
+            "rus": "Выберите локацию:",
             "uzb": "Аниқ манзилни танланг:"
         }
         markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -316,7 +316,7 @@ def get_location(message):
         else:
             lang = {
                 "rus": "Успешно зарегистрирован",
-                "uzb": "Муваффақиятли рўйхатдан ўтди"
+                "uzb": "Муваффақиятли рўйхатдан ўтдингиз"
             }
             if USER['user_type'] == 1:
                 photo = open('photos/thank_1.png', 'rb')
