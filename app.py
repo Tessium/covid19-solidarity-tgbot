@@ -51,7 +51,7 @@ HELP_TYPE = []
 @bot.message_handler(commands=['start'])
 def start(message):
     chat_id = message.chat.id
-    photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/welcome_2.png', 'rb')
+    photo = open('photos/welcome_2.png', 'rb')
     bot.send_photo(chat_id, photo)
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.add(types.KeyboardButton(LANGUAGE_BUTTON_RU))
@@ -84,7 +84,7 @@ def start_login_uzb(message):
     USER['chat_id'] = chat_id
     if message.text == LANGUAGE_BUTTON_RU:
         USER['lang'] = 'rus'
-        photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/profile_2.png', 'rb')
+        photo = open('photos/profile_2.png', 'rb')
         bot.send_photo(chat_id, photo)
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_RU))
@@ -92,7 +92,7 @@ def start_login_uzb(message):
         msg = bot.send_message(chat_id=chat_id, text="🙃 Нуждающийся 🙃\n или \n 😇 Волонтер 😇", reply_markup=markup)
     elif message.text == LANGUAGE_BUTTON_UZ:
         USER['lang'] = 'uzb'
-        photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/profile_2.png', 'rb')
+        photo = open('photos/profile_2.png', 'rb')
         bot.send_photo(chat_id, photo)
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add(types.KeyboardButton(VOLUNTEER_BUTTON_UZ))
@@ -111,9 +111,9 @@ def get_user_type(message):
         if USER['chat_id'] == chat_id:
             USER['user_type'] = user_type_set(msg)
             if USER['user_type'] == 1:
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/name_1.png', 'rb')
+                photo = open('photos/name_1.png', 'rb')
             elif USER['user_type'] == 2:
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/name_2.png', 'rb')
+                photo = open('photos/name_2.png', 'rb')
             msg = bot.send_photo(chat_id, photo)
             lang = {
                 "rus": "ФИО",
@@ -129,9 +129,9 @@ def get_full_name(message):
     if USER['chat_id'] == chat_id:
         USER['full_name'] = message.text
         if USER['user_type'] == 1:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/phone_1.png', 'rb')
+            photo = open('photos/phone_1.png', 'rb')
         elif USER['user_type'] == 2:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/phone_2.png', 'rb')
+            photo = open('photos/phone_2.png', 'rb')
         bot.send_photo(chat_id, photo)
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True,
                                              one_time_keyboard=True)  # Подключаем клавиатуру
@@ -175,10 +175,10 @@ def get_contact_info(message):
             markup.add(types.KeyboardButton(i))
         # shutga next step handler bilan qilish kere agar bir busa usertype multiple tallab biladi
         if USER['user_type'] == 1:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/help_1.png', 'rb')
+            photo = open('photos/help_1.png', 'rb')
             msg = bot.send_message(chat_id=chat_id, text=lang[0], reply_markup=markup)
         else:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/help_2.png', 'rb')
+            photo = open('photos/help_2.png', 'rb')
             msg = bot.send_message(chat_id=chat_id, text=lang[1], reply_markup=markup)
         bot.register_next_step_handler(msg, get_help_types)
 
@@ -203,7 +203,7 @@ def get_help_types(message):
                         markup.add(types.KeyboardButton(i))
                 markup.add(types.KeyboardButton(lang[USER["lang"]]))
 
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/help_1.png', 'rb')
+                photo = open('photos/help_1.png', 'rb')
                 if USER['lang'] == 'rus':
                     make_help_button('title_ru')
                     msg = bot.send_message(chat_id=chat_id, text="Еще?", reply_markup=markup)
@@ -217,7 +217,7 @@ def get_help_types(message):
                     "rus": "оставьте комментарий",
                     "uzb": "изоҳ қолдиринг",
                 }
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/comment_1.png', 'rb')
+                photo = open('photos/comment_1.png', 'rb')
                 msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
                 bot.register_next_step_handler(msg, get_comment)
         else:
@@ -226,7 +226,7 @@ def get_help_types(message):
                 "rus": "оставьте комментарий",
                 "uzb": "изоҳ қолдиринг",
             }
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/comment_2.png', 'rb')
+            photo = open('photos/comment_2.png', 'rb')
             msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
             bot.register_next_step_handler(msg, get_comment)
 
@@ -244,9 +244,9 @@ def get_comment(message):
             "uzb": "Вилоят:"
         }
         if USER['user_type'] == 1:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/location_1.png', 'rb')
+            photo = open('photos/location_1.png', 'rb')
         elif USER['user_type'] == 2:
-            photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/location_2.png', 'rb')
+            photo = open('photos/location_2.png', 'rb')
         msg = bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
         bot.register_next_step_handler(msg, get_region)
 
@@ -286,7 +286,7 @@ def get_address(message):
     chat_id = message.chat.id
     if USER['chat_id'] == chat_id:
         USER['address'] = message.text
-        photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/ex_location_2.png', 'rb')
+        photo = open('photos/ex_location_2.png', 'rb')
         bot.send_photo(chat_id, photo)
         lang = {
             "rus": "Выбирайте локацию:",
@@ -319,9 +319,9 @@ def get_location(message):
                 "uzb": "Муваффақиятли рўйхатдан ўтди"
             }
             if USER['user_type'] == 1:
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/thank_1.png', 'rb')
+                photo = open('photos/thank_1.png', 'rb')
             else:
-                photo = open('/home/rakhmatjon/PycharmProjects/covid19-solidarity-tgbot/photos/thank_2.png', 'rb')
+                photo = open('photos/thank_2.png', 'rb')
             bot.send_photo(chat_id, photo)
             bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
 
