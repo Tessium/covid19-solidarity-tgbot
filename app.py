@@ -53,7 +53,12 @@ HELP_TYPE = []
 
 
 ########################################################################
+def restart_btn_checker(message):
+    return message.text == 'Restart'
+
+
 @bot.message_handler(commands=['start'])
+@bot.message_handler(func=restart_btn_checker)
 def start(message):
     global USERS
     chat_id = message.chat.id
@@ -71,10 +76,10 @@ def start(message):
     bot.register_next_step_handler(msg, start_login_uzb)
 
 
-
 def user_button_check(message):
     return message.text == VOLUNTEER_BUTTON_RU or message.text == INNEED_BUTTON_RU \
            or message.text == VOLUNTEER_BUTTON_UZ or message.text == INNEED_BUTTON_UZ
+
 
 def user_type_set(user_type):
     if user_type == VOLUNTEER_BUTTON_RU or user_type == VOLUNTEER_BUTTON_UZ:  
@@ -436,12 +441,21 @@ def get_location(message):
                 photo = open('photos/thank_1.png', 'rb')
             else:
                 photo = open('photos/thank_2.png', 'rb')
-            bot.send_photo(chat_id, photo)
-            bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
             USERS.remove(USER)
+
+            lang = {
+                "rus": "Начать сначала",
+                "uzb": "Бошидан бошлаш"
+            }
             markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-            markup.add(types.KeyboardButton(text='/start'))
-            msg = bot.send_message(chat_id, reply_markup=markup)
+            markup.add(types.KeyboardButton(text=lang[USER["lang"]]))
+
+            lang = {
+                "rus": "Успешно зарегистрирован",
+                "uzb": "Муваффақиятли рўйхатдан ўтдингиз"
+            }
+            bot.send_photo(chat_id, photo)
+            bot.send_message(chat_id=chat_id, text=lang[USER["lang"]], reply_markup=markup)
 
 
 if __name__ == "__main__":
