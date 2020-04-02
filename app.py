@@ -54,7 +54,7 @@ HELP_TYPE = []
 
 ########################################################################
 def restart_btn_checker(message):
-    return message.text == 'Restart'
+    return message.text == 'Начать сначала' or message.text == 'Бошидан бошлаш'
 
 
 @bot.message_handler(commands=['start'])
