@@ -233,7 +233,7 @@ def get_help_types(message):
     global HELP_TYPE
     lang = {
         "rus": "Достаточно",
-        "uzb": "Етарлик",
+        "uzb": "Етарли",
     }
     chat_id = message.chat.id
     USER = {}
@@ -242,7 +242,7 @@ def get_help_types(message):
             USER = i
     if USER['chat_id'] == chat_id:
         if USER['user_type'] == 1:
-            if message.text != "Достаточно" and message.text != "Етарлик":
+            if message.text != "Достаточно" and message.text != "Етарли":
                 if 'help_type' not in USER.keys():
                     USER['help_type'] = ''
                 if message.text not in HELP_TYPE:
@@ -438,6 +438,10 @@ def get_location(message):
                 photo = open('photos/thank_2.png', 'rb')
             bot.send_photo(chat_id, photo)
             bot.send_message(chat_id=chat_id, text=lang[USER["lang"]])
+            USERS.remove(USER)
+            markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+            markup.add(types.KeyboardButton(text='/start'))
+            msg = bot.send_message(chat_id, reply_markup=markup)
 
 
 if __name__ == "__main__":
