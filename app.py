@@ -9,7 +9,7 @@ import json
 
 USERS = []
 
-r = requests.get('https://birdamlik.uz/api/helptypes')
+r = requests.get('https://api.birdamlik.uz/api/helptypes')
 if r.status_code != 200:
     print("Error:", r.status_code)
 
@@ -453,9 +453,9 @@ def get_comment(message):
         USER['info'] = message.text
         print(USER)
         if USER['user_type'] == 1:
-            r = requests.post('https://birdamlik.uz/api/volunteers/create', data=USER)
+            r = requests.post('https://api.birdamlik.uz/api/volunteers/create', data=USER)
         else:
-            r = requests.post('https://birdamlik.uz/api/inneed/create', data=USER)
+            r = requests.post('https://api.birdamlik.uz/api/inneed/create', data=USER)
         if r.status_code != 201:
             print("Error: ", r.status_code)
             print("Error text: ", r.text)
