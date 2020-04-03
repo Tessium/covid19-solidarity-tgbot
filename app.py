@@ -499,4 +499,9 @@ def get_comment(message):
 
 
 if __name__ == "__main__":
-    bot.polling()
+    while True:
+	    try:
+	        bot.polling(none_stop=True, interval=0, timeout=5)
+	    except Exception as e:
+	        print(e)
+	        time.sleep(10)
